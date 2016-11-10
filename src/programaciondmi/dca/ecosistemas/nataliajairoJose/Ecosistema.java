@@ -51,7 +51,7 @@ public class Ecosistema {
 	}
 
 	public void key() {
-
+//personajeee:3
 	}
 
 	public void click() {
