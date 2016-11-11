@@ -21,5 +21,14 @@ public abstract class PlantaAbstracta implements Runnable{
 	}
 		
 	public abstract void dibujar();
+	
+	/**
+	 * Método encargadado de recibir el daño ocasionado por el ataque una especie abstracta
+	 * el método deberá validar su posicion respecto a la especie para saber si se lastima o no.
+	 * 
+	 * @param lastimador quien hace daño a la planta actual
+	 * @return true si pudo hacer daño y false si no puedo dañar a la especie actual 
+	 */
+	public abstract boolean recibirDano(EspecieAbstracta lastimador);
 
 }

@@ -2,7 +2,9 @@ package programaciondmi.dca.ejecucion;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -12,8 +14,10 @@ import java.util.Set;
 import org.reflections.Reflections;
 
 import processing.core.PApplet;
+import processing.core.PShape;
 import programaciondmi.dca.core.EcosistemaAbstracto;
 import programaciondmi.dca.core.EspecieAbstracta;
+import programaciondmi.dca.core.LogoAbstracto;
 import programaciondmi.dca.core.PlantaAbstracta;
 
 public class Mundo implements Observer {
@@ -25,7 +29,10 @@ public class Mundo implements Observer {
 	private Set<EcosistemaAbstracto> ecosistemas;
 	private List<EspecieAbstracta> especies;
 	private List<PlantaAbstracta> plantas;
-
+	private PShape mapa;
+	private PShape botones_base;
+	private ArrayList<LogoAbstracto> botones;
+	
 	private Mundo(PApplet app) {
 		this.app = app;
 		this.camX = app.width / 2;
@@ -33,6 +40,12 @@ public class Mundo implements Observer {
 		this.ecosistemas = new HashSet<EcosistemaAbstracto>();
 		this.especies = new LinkedList<EspecieAbstracta>();
 		this.plantas = new LinkedList<PlantaAbstracta>();
+		
+		this.mapa = this.app.loadShape("global_data/mapa.svg");
+		this.botones_base = this.app.loadShape("global_data/botones.svg");
+		
+		botones = new ArrayList<LogoAbstracto>();
+	
 	}
 
 	/**
@@ -138,12 +151,29 @@ public class Mundo implements Observer {
 		 * estudiantes
 		 */
 		app.background(150);
+		app.pushMatrix();
+		// Moverse en el escenario
 		moverCamara();
+		
+		// dibujar el mapa
+		app.shapeMode(PApplet.CENTER);
+		app.shape(mapa, 0, 0);
+		app.shapeMode(PApplet.CORNER);
+		
+		// dibujar los ecosistemas
 		synchronized (ecosistemas) {
 			for (EcosistemaAbstracto ecosistema : ecosistemas) {
 				ecosistema.dibujar();
 			}
 		}
+		app.popMatrix();
+		
+		// dibujar los botones
+		app.shapeMode(PApplet.CENTER);
+		app.shape(botones_base, app.width/2,app.height-60);
+		app.shapeMode(PApplet.CORNER);
+		
+		dibujarBotones();				
 
 	}
 
@@ -158,7 +188,11 @@ public class Mundo implements Observer {
 	public synchronized List<PlantaAbstracta> getPlantas() {
 		return plantas;
 	}
-
+	
+	public synchronized void agregarBoton(LogoAbstracto boton){
+		botones.add(boton);
+	}
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		System.out.println(" El ecosistema " + arg0 + " envia una notificación");
@@ -173,6 +207,7 @@ public class Mundo implements Observer {
 			PlantaAbstracta nuevaPlanta = (PlantaAbstracta) arg1;
 			plantas.add(nuevaPlanta);
 		}
+		
 	}
 
 	private void moverCamara() {
@@ -185,7 +220,7 @@ public class Mundo implements Observer {
 		if (app.mouseY < app.height / 4) {
 			camY++;
 		}
-		if (app.mouseX > 3 * app.height / 4) {
+		if (app.mouseY > 3 * app.height / 4 && app.mouseY < app.height-100) {
 			camY--;
 		}
 		
@@ -194,5 +229,35 @@ public class Mundo implements Observer {
 		app.fill(255, 0, 0);
 		app.ellipse(0, 0 / 2, 1, 1);
 	}
+	
+	private void dibujarBotones(){
+		int offSetX = 0;
+		for(int i = 0; i < botones.size();i++){
+			
+			// Definir la posición del Logo
+			int posicionX = (app.width/2) + (i%2==0?offSetX:-offSetX);
+			int posicionY = app.height-70;
+			
+			LogoAbstracto logo = botones.get(i);
+			logo.setX(posicionX);
+			logo.setY(posicionY);
+			logo.dibujar();
+				
+			if(i%2==0){
+				offSetX+=60;
+			}						
+		}
+	}
 
+	public void click() {
+		for(int i = 0; i < botones.size();i++){
+			LogoAbstracto logo = botones.get(i);
+			
+			if(PApplet.dist(app.mouseX, app.mouseY, logo.getX(), logo.getY()) < 30){
+				logo.click();
+			}
+		}
+		
+	}
+	
 }

@@ -16,6 +16,10 @@ public class EcosistemaEjemplo extends EcosistemaAbstracto {
 
 	public EcosistemaEjemplo() {
 		super();
+		
+		Mundo ref = Mundo.ObtenerInstancia();
+		LogoEjemplo boton= new LogoEjemplo("global_data/bot1.svg", this);
+		ref.agregarBoton(boton);
 	}
 
 
@@ -34,14 +38,11 @@ public class EcosistemaEjemplo extends EcosistemaAbstracto {
 	protected LinkedList<EspecieAbstracta> poblarEspecies() {
 		LinkedList<EspecieAbstracta> especies = new LinkedList<EspecieAbstracta>();
 		EspecieBlanca nueva = new EspecieBlanca(this);
-		especies.add(nueva);
-		
+		especies.add(nueva);		
 		nueva = new EspecieBlanca(this);
-		especies.add(nueva);
-		
+		especies.add(nueva);		
 		EspecieAzul azul = new EspecieAzul(this);
-		especies.add(azul);
-		
+		especies.add(azul);		
 		return especies;
 	}
 
@@ -56,23 +57,17 @@ public class EcosistemaEjemplo extends EcosistemaAbstracto {
 
 	@Override
 	protected List<EspecieAbstracta> generarIndividuos() {
-		// TODO Auto-generated method stub
-		
 		EspecieBlanca nueva = new EspecieBlanca(this);
-		especies.add(nueva);
-		
+		especies.add(nueva);		
 		EspecieAzul azul = new EspecieAzul(this);
-		especies.add(azul);
-		
+		especies.add(azul);		
 		return null;
 	}
-
+	
 
 	@Override
 	protected List<PlantaAbstracta> generarPlantas() {
 		return null;
 	}
-
-
-
+	
 }
